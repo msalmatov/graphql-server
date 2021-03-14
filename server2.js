@@ -5,8 +5,12 @@ const { buildSchema } = require("graphql");
 // GraphQL schema
 const schema = buildSchema(`
     type Query {
-        course(id: Int!): Course
-        courses(topic: String): [Course]
+      course(id: Int!): Course
+      courses(topic: String): [Course]
+    }
+
+    type Mutation {
+      updateCourseTopic(id: Int!, topic: String!): Course
     }
 
     type Course {
@@ -63,10 +67,26 @@ const getCourses = (args) => {
   }
 };
 
+const updateCourseTopic = ({ id, topic }) => {
+  let updatedCourse = null;
+  coursesData.map((course) => {
+    if (course.id === id) {
+      course.topic = topic;
+      updatedCourse = course;
+      return course;
+    }
+  });
+
+  console.log(coursesData);
+
+  return updatedCourse;
+};
+
 // Root resolver
 const root = {
   course: getCourse,
   courses: getCourses,
+  updateCourseTopic: updateCourseTopic,
 };
 
 // Create an express server and GraphQL endpoint
